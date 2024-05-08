@@ -109,7 +109,7 @@ public class TutoriasUI {
 	        try {
 				decision_perfil = scanInt.nextInt();} 
 	        catch(Exception e) {
-	            System.out.println("\n**ERROR** La decision ingresada debe ser un numero.");
+	            System.out.println("\n**ERROR** La decision ingresada debe ser un numero.\n");
 	            scanInt.nextLine();
 	            continue;}
 	        
@@ -117,7 +117,7 @@ public class TutoriasUI {
 	            seleccion_perfil = false;} 
 	        
 	        else {
-	            System.out.println("\n**ERROR** El numero ingresado no se encuentra entre las opciones disponibles.");}}
+	            System.out.println("\n**ERROR** El numero ingresado no se encuentra entre las opciones disponibles.\n");}}
 	    
         int tipo_perfil = decision_perfil;
 
@@ -131,11 +131,11 @@ public class TutoriasUI {
         
         //[Registro de datos para crear el usuario]
 
-        System.out.println("[Ingreso de datos personales]");
+        System.out.println("\n[Ingreso de datos personales]");
  		//Ciclo para validar el nombre completo del usuario
         boolean validar_nombre = true;
         while(validar_nombre) {
-            System.out.println("\nIngrese su primer nombre y apellido separados por un espacio (ej. 'Nombre Apellido'):");
+            System.out.println("Ingrese su primer nombre y apellido separados por un espacio (ej. 'Nombre Apellido'):");
             nombre_completo = scanString.nextLine();
             String[] nombre_completo_usuario = nombre_completo.trim().split(" ");
             
@@ -143,7 +143,7 @@ public class TutoriasUI {
                 validar_nombre = false;} //Salir del ciclo
             
             else {//Solicitar que lo vuelva a introducir
-                System.out.println("**ERROR** Ingrese sus datos en el formato solicitado.\n");}}
+                System.out.println("\n**ERROR** Ingrese sus datos en el formato solicitado.\n");}}
 
         //Ciclo para validar el carnet del usuario
         boolean validar_carnet = true;
@@ -152,7 +152,7 @@ public class TutoriasUI {
             try {
                 carnet = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** El carnet ingresado debe ser un numero entero.");
+                System.out.println("\n**ERROR** El carnet ingresado debe ser un numero entero.\n");
                 scanInt.nextLine();
                 continue;}
             
@@ -160,7 +160,7 @@ public class TutoriasUI {
                 validar_carnet = false;}
             
             else {
-                System.out.println("**ERROR** El carnet ingresado no es válido.");}}
+                System.out.println("\n**ERROR** El carnet ingresado no es válido.\n");}}
 
         //Ciclo para validar la edad del usuario
         boolean validar_edad = true;
@@ -169,7 +169,7 @@ public class TutoriasUI {
             try {
                 edad = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** La edad ingresada debe ser un numero entero.");
+                System.out.println("\n**ERROR** La edad ingresada debe ser un numero entero.\n");
                 scanInt.nextLine();
                 continue;}
             
@@ -177,7 +177,7 @@ public class TutoriasUI {
                 validar_edad = false;}
             
             else {
-                System.out.println("**ERROR** La edad ingresada no es válida.");}}
+                System.out.println("\n**ERROR** La edad ingresada no es válida.\n");}}
 
         //Ciclo para validar el género del usuario
         boolean validar_genero = true;
@@ -187,7 +187,7 @@ public class TutoriasUI {
             try {
                 decision_genero = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** La decision ingresada debe ser un numero.");
+                System.out.println("\n**ERROR** La decision ingresada debe ser un numero.\n");
                 scanInt.nextLine();
                 continue;}
             
@@ -196,30 +196,30 @@ public class TutoriasUI {
                 gender = (decision_genero==1);}
             
             else {
-                System.out.println("**ERROR** El numero ingresado no se encuentra entre las opciones disponibles.");}}
+                System.out.println("\n**ERROR** El numero ingresado no se encuentra entre las opciones disponibles.\n");}}
         	        
 		//Solicitar contraseña
 		System.out.println("Ingrese su password:");
 		password = scanString.nextLine().trim();
 
         //Ciclo para validar la calificación en los cursos
-        System.out.println("[Dominio de los cursos]");
+        System.out.println("\n[Dominio de los cursos]");
         boolean validar_calificaciones = true;
         while(validar_calificaciones) {
-            System.out.println("Ingrese la calificación que se da en los siguientes cursos (del 1 al 10):");
+            System.out.println("Ingrese una calificación que corresponda al dominio que considera tener en los siguientes cursos (siendo 1 lo más bajo y 10 lo más alto):");
             System.out.println("Cálculo:");
             try {
                 calculo = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** La calificación ingresada debe ser un número.");
+                System.out.println("\n**ERROR** La calificación ingresada debe ser un número entero.\n");
                 scanInt.nextLine();
                 continue;}
             
-            System.out.println("Álgebra:");
+            System.out.println("Algebra Lineal:");
             try {
                 algebra = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** La calificación ingresada debe ser un número.");
+                System.out.println("\n**ERROR** La calificación ingresada debe ser un número entero.\n");
                 scanInt.nextLine();
                 continue;}
             
@@ -227,7 +227,7 @@ public class TutoriasUI {
             try {
                 fisica = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** La calificación ingresada debe ser un número.");
+                System.out.println("\n**ERROR** La calificación ingresada debe ser un número entero.\n");
                 scanInt.nextLine();
                 continue;}
             
@@ -235,7 +235,7 @@ public class TutoriasUI {
             try {
                 quimica = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** La calificación ingresada debe ser un número.");
+                System.out.println("\n**ERROR** La calificación ingresada debe ser un número entero.\n");
                 scanInt.nextLine();
                 continue;}
             
@@ -243,7 +243,7 @@ public class TutoriasUI {
             try {
                 estadistica = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** La calificación ingresada debe ser un número.");
+                System.out.println("\n**ERROR** La calificación ingresada debe ser un número entero.\n");
                 scanInt.nextLine();
                 continue;}
             
@@ -251,7 +251,7 @@ public class TutoriasUI {
             try {
                 programacion = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** La calificación ingresada debe ser un número.");
+                System.out.println("\n**ERROR** La calificación ingresada debe ser un número entero.\n");
                 scanInt.nextLine();
                 continue;}
             
@@ -259,36 +259,37 @@ public class TutoriasUI {
                 validar_calificaciones = false;}
             
             else {
-                System.out.println("**ERROR** Las calificaciones ingresadas no son válidas (deben ser valores numéricos entre 1 y 10).");}}
+                System.out.println("\n**ERROR** Las calificaciones ingresadas no son válidas (todas ellas deben ser valores numéricos entre 1 y 10).\n");}}
 
-        System.out.println("[Preferencias para las tutorías]");
+        System.out.println("\n[Preferencias para las tutorías]");
         //Ciclo para validar la modalidad de tutoría
         boolean validar_modalidad = true;
         while(validar_modalidad) {
-            System.out.println("Seleccione el número correspondiente a la modalidad de tutoría que desea ofrecer: \n1. Presencial\n2. Virtual");
+            System.out.println("Seleccione el número correspondiente a la modalidad de tutoría que prefiere: \n1. Presencial\n2. Virtual");
             int decision_modalidad = 0;
             try {
                 decision_modalidad = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** La decision ingresada debe ser un numero.");
+                System.out.println("\n**ERROR** La decision ingresada debe ser un numero.\n");
                 scanInt.nextLine();
                 continue;}
             
             if((decision_modalidad>0)&&(decision_modalidad<3)) {
-                validar_modalidad = false;}
+                validar_modalidad = false;
+                modalidad = (decision_modalidad==1);}
             
             else {
-                System.out.println("**ERROR** El numero ingresado no se encuentra entre las opciones disponibles.");}}
+                System.out.println("\n**ERROR** El numero ingresado no se encuentra entre las opciones disponibles.\n");}}
 
         //Ciclo para validar el rango de precios
         boolean validar_rango = true;
         while(validar_rango) {
-            System.out.println("Ingrese el rango de precios que desea cobrar por hora de tutoría (en Q):");
+            System.out.println("Ingrese los límites enteros del rango de precios que desea pagar/cobrar por hora de tutoría (en Q):");
             System.out.println("Mínimo:");
             try {
                 min = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** El rango ingresado debe ser un número.");
+                System.out.println("\n**ERROR** El valor monetario ingresado debe ser un número entero.\n");
                 scanInt.nextLine();
                 continue;}
             
@@ -296,7 +297,7 @@ public class TutoriasUI {
             try {
                 max = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** El rango ingresado debe ser un número.");
+                System.out.println("\n**ERROR** El valor monetario ingresado debe ser un número entero.\n");
                 scanInt.nextLine();
                 continue;}
             
@@ -304,9 +305,9 @@ public class TutoriasUI {
                 validar_rango = false;}
             
             else {
-                System.out.println("**ERROR** El rango ingresado no es válido.");}}
+                System.out.println("\n**ERROR** Los límites del rango ingresado no son válidos.\n");}}
             
-        System.out.println("[Disponibilidad de días]");
+        System.out.println("\n[Disponibilidad de días]");
         //Ciclo para validar los días disponibles
         boolean validar_dias = true;
         while(validar_dias) {
@@ -316,7 +317,7 @@ public class TutoriasUI {
             try {
                 lunes = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** La decisión ingresada debe ser un número.");
+                System.out.println("\n**ERROR** La decisión ingresada debe ser un número entero.\n");
                 scanInt.nextLine();
                 continue;}
             int martes = 0;
@@ -324,7 +325,7 @@ public class TutoriasUI {
             try {
                 martes = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** La decisión ingresada debe ser un número.");
+                System.out.println("\n**ERROR** La decisión ingresada debe ser un número entero.\n");
                 scanInt.nextLine();
                 continue;}
             int miercoles = 0;
@@ -332,7 +333,7 @@ public class TutoriasUI {
             try {
                 miercoles = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** La decisión ingresada debe ser un número.");
+                System.out.println("\n**ERROR** La decisión ingresada debe ser un número entero.\n");
                 scanInt.nextLine();
                 continue;}
             int jueves = 0;
@@ -340,7 +341,7 @@ public class TutoriasUI {
             try {
                 jueves = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** La decisión ingresada debe ser un número.");
+                System.out.println("\n**ERROR** La decisión ingresada debe ser un número entero.\n");
                 scanInt.nextLine();
                 continue;}
             int viernes = 0;
@@ -348,7 +349,7 @@ public class TutoriasUI {
             try {
                 viernes = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** La decisión ingresada debe ser un número.");
+                System.out.println("\n**ERROR** La decisión ingresada debe ser un número entero.\n");
                 scanInt.nextLine();
                 continue;}
             int sabado = 0;
@@ -356,7 +357,7 @@ public class TutoriasUI {
             try {
                 sabado = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** La decisión ingresada debe ser un número.");
+                System.out.println("\n**ERROR** La decisión ingresada debe ser un número entero.\n");
                 scanInt.nextLine();
                 continue;}
             int domingo = 0;
@@ -364,16 +365,16 @@ public class TutoriasUI {
             try {
                 domingo = scanInt.nextInt();}
             catch(Exception e) {
-                System.out.println("**ERROR** La decisión ingresada debe ser un número.");
+                System.out.println("\n**ERROR** La decisión ingresada debe ser un número entero.\n");
                 scanInt.nextLine();
                 continue;}
             
             if((lunes==0||lunes==1)&&(martes==0||martes==1)&&(miercoles==0||miercoles==1)&&(jueves==0||jueves==1)&&(viernes==0||viernes==1)&&(sabado==0||sabado==1)&&(domingo==0||domingo==1)) {
-                dias_disponibles = lunes + "," + martes + "," + miercoles + "," + jueves + "," + viernes + "," + sabado + "," + domingo;
+                dias_disponibles = ""+lunes+martes+miercoles+jueves+viernes+sabado+domingo;
                 validar_dias = false;}
             
             else {
-                System.out.println("**ERROR** Las decisiones ingresadas no son válidas (deben ser valores numéricos entre 0 y 1).");}}
+                System.out.println("\n**ERROR** Las decisiones ingresadas no son válidas (los valores numéricos de cada día deben ser 0 o 1).\n");}}
 
         //Agregar los datos al usuario y agregarlo a la lista de usuarios (también agregar su username de la lista de usernames).
         usuario.setNombreCompleto(nombre_completo);
@@ -414,7 +415,7 @@ public class TutoriasUI {
         //En esta variable se registrará el nombre de usuario ingresado por el ususario
 	    String username_ingresado = "";
 	   
-	    System.out.println("\nIngrese su correo institucional: ");
+	    System.out.println("\nIngrese su correo electrónico institucional: ");
 	    username_ingresado = scanString.nextLine().trim().toLowerCase();
 	        	
 		if(lista_usernames.contains(username_ingresado)) {//Si el username ingresado se encuentra en el sistema
@@ -432,7 +433,7 @@ public class TutoriasUI {
 	    else {//Si la contraseña ingresada es incorrecta
 			System.out.println("\nCONTRASEÑA INCORRECTA.\nLa contraseña ingresada no es correcta.");}}
 	    
-	    else {//Si el nombre de usuario ingresado no se encuentra entre los usernames del sistema universitario
-			System.out.println("\nUSUARIO NO ENCONTRADO.\nNo hay ningun usuario con el username ingresado. Verifique que el username sea correcto o que su usuario ya exista.");}}
+	    else {//Si el nombre de usuario ingresado no se encuentra entre los usernames del sistema
+			System.out.println("\nUSUARIO NO ENCONTRADO.\nNo hay ningun usuario con el correo electrónico institucional ingresado. Verifique que el correo sea correcto o que su usuario ya exista.");}}
     
 }
