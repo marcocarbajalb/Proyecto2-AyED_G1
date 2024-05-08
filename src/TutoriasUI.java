@@ -17,7 +17,13 @@ public class TutoriasUI {
 	* @return Este método no devuelve nada
 	*/
     public static void main(String[] args) {
-        
+
+        //-----[Variables importantes de la base de datos]-------
+        String username_neo4j = "neo4j";
+		String password_neo4j = "paint-june-freezes";
+		String boltURL = "bolt://44.211.193.245:7687";
+        //--------------------------------------------------------
+
         //Instanciar el gestor que permitirá la persistencia de los datos
 		PersistenciaCSV gestor = new PersistenciaCSV();
         
@@ -51,13 +57,13 @@ public class TutoriasUI {
 			switch(decision_principal) {
 				case 1:{//Registrarse
 					System.out.println("\n----------------------------REGISTRARSE----------------------------");
-					registrarUsuario(lista_usuarios,lista_usernames,scanString,scanInt);
+					registrarUsuario(lista_usuarios,lista_usernames,scanString,scanInt,username_neo4j,password_neo4j,boltURL);
 					break;}
 				
 				case 2:{//Iniciar sesión
 					System.out.println("\n---------------------------INICIAR SESION---------------------------");
 					if(lista_usuarios.size()>0) {
-						iniciarSesion(lista_usuarios,lista_usernames,scanString,scanInt,gestor);}
+						iniciarSesion(lista_usuarios,lista_usernames,scanString,scanInt,gestor,username_neo4j,password_neo4j,boltURL);}
 					
 					else {
 						System.out.println("\nOPCION NO DISPONIBLE.\nPor el momento, no hay ningun usuario registrado en el sistema de la universidad.");}
@@ -92,9 +98,12 @@ public class TutoriasUI {
 	 * @param lista_usernames La lista en la que se deben almacenar los usernames de los usuarios creados.
 	 * @param scanString El scanner para registrar los textos ingresados por el usuario.
 	 * @param scanInt El scanner para registrar los números enteros ingresados por el usuario.
+     * @param username_neo4j El nombre de usuario de la base de datos Neo4j.
+     * @param password_neo4j La contraseña de la base de datos Neo4j.
+     * @param boltURL La URL de la base de datos Neo4j.
 	 * @return Este método no devuelve nada.
 	 */
-	public static void registrarUsuario(ArrayList<ITipoUsuario> lista_usuarios, ArrayList<String> lista_usernames, Scanner scanString, Scanner scanInt) {
+	public static void registrarUsuario(ArrayList<ITipoUsuario> lista_usuarios, ArrayList<String> lista_usernames, Scanner scanString, Scanner scanInt, String username_neo4j, String password_neo4j, String boltURL) {
 		
 		//Tipos de usuarios disponibles
 		String [] tipos_de_perfiles = {"Estudiante","Tutor"};
@@ -396,6 +405,9 @@ public class TutoriasUI {
 
         lista_usuarios.add(usuario);
         lista_usernames.add(usuario.getUsername());
+
+        //Agregar usuario a la base de datos
+        agregarUsuarioNeo4j(usuario.getUsername(), carnet, nombre_completo, username_neo4j, password_neo4j, boltURL);
         
         //Notificar al usuario y brindarle su información de registro.
         System.out.println("\nUSUARIO CREADO EXITOSAMENTE.");
@@ -408,9 +420,12 @@ public class TutoriasUI {
 	 * @param scanString El scanner para registrar los textos ingresados por el usuario.
 	 * @param scanInt El scanner para registrar los números enteros ingresados por el usuario.
 	 * @param gestor El gestor (instancia de la clase PersistenciaCSV) para guardar y leer los datos del csv.
+     * @param username_neo4j El nombre de usuario de la base de datos Neo4j.
+     * @param password_neo4j La contraseña de la base de datos Neo4j.
+     * @param boltURL La URL de la base de datos Neo4j.
 	 * @return Este método no devuelve nada.
 	 */
-	public static void iniciarSesion(ArrayList<ITipoUsuario> lista_usuarios, ArrayList<String> lista_usernames,Scanner scanString, Scanner scanInt, PersistenciaCSV gestor) {
+	public static void iniciarSesion(ArrayList<ITipoUsuario> lista_usuarios, ArrayList<String> lista_usernames,Scanner scanString, Scanner scanInt, PersistenciaCSV gestor, String username_neo4j, String password_neo4j, String boltURL) {
 	    	
         //En esta variable se registrará el nombre de usuario ingresado por el ususario
 	    String username_ingresado = "";
@@ -435,5 +450,20 @@ public class TutoriasUI {
 	    
 	    else {//Si el nombre de usuario ingresado no se encuentra entre los usernames del sistema
 			System.out.println("\nUSUARIO NO ENCONTRADO.\nNo hay ningun usuario con el correo electrónico institucional ingresado. Verifique que el correo sea correcto o que su usuario ya exista.");}}
+
+    public static void agregarUsuarioNeo4j(String username, int carnet, String nombre_completo, String username_neo4j, String password_neo4j, String boltURL) {
+        try ( EmbeddedNeo4j db = new EmbeddedNeo4j(boltURL, username_neo4j, password_neo4j) )
+        {
+		 	String result = db.insertarEstudiante(username, carnet, nombre_completo);
+		 	
+		 	if (result.equalsIgnoreCase("OK")) {
+		 		System.out.println("Estudiante insertado correctamente");
+		 	}
+        	
+        } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
     
 }
