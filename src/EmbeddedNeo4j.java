@@ -78,4 +78,28 @@ public class EmbeddedNeo4j implements AutoCloseable {
         	return e.getMessage();
         }
     }
+
+    public String insertarTutor(String username, int carnet, String nombre_completo) {
+    	try ( Session session = driver.session() )
+        {
+   		 
+   		 String result = session.writeTransaction( new TransactionWork<String>()
+   		 
+            {
+                @Override
+                public String execute( Transaction tx )
+                {
+                    tx.run( "CREATE (Test:Tutor {correo:'" + username + "', carné:"+ carnet +", nombre_completo:'"+ nombre_completo +"'})");
+                    
+                    return "OK";
+                }
+            }
+   		 
+   		 );
+            
+            return result;
+        } catch (Exception e) {
+        	return e.getMessage();
+        }
+    }
 }
