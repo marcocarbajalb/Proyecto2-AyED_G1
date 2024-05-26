@@ -20,8 +20,8 @@ public class TutoriasUI {
 
         //-----[Variables importantes de la base de datos]-------
         String username_neo4j = "neo4j";
-		String password_neo4j = "paint-june-freezes";
-		String boltURL = "bolt://44.211.193.245:7687";
+		String password_neo4j = "builder-deliveries-harnesses";
+		String boltURL = "bolt://34.237.124.48:7687";
         //--------------------------------------------------------
 
         //Instanciar el gestor que permitirá la persistencia de los datos
