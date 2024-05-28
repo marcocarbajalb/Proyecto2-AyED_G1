@@ -17,61 +17,61 @@ public class Estudiante extends ITipoUsuario {
     /*
      * Nombre completo del usuario.
      */
-    private String nombre_completo;
+    public String nombre_completo;
 
     /*
      * Número de carné del usuario.
      */
-    private int carnet;
+    public int carnet;
 
     /*
      * Nombre de usuario (único) del usuario.
      */
-    private String username;
+    public String username;
 
     /*
      * Contraseña del ususario.
      */
-    private String password;
+    public String password;
 
     /*
      * Edad del usuario.
      */
-    private int edad;
+    public int edad;
 
     /*
      * Género del usuario.
      * True corresponderá a masculino y false a femenino.
      */
-    private boolean gender;
+    public boolean gender;
 
     /*
      * String con los días disponibles del estudiante.
      * Serán 7 caracteres en cadena, donde 1 corresponderá a un día disponible y 0 a un día no disponible.
      */
-    private String dias_disponibles;
+    public String dias_disponibles;
 
     /*
      * Calificación que se da el estudiante en los cursos.
      */
-    private int calculo, algebra, fisica, quimica, estadistica, programacion;
+    public int calculo, algebra, fisica, quimica, estadistica, programacion;
 
     /*
      * Modalidad preferida del estudiante.
      * True corresponderá a presencial y false a virtual.
      */
-    private boolean modalidad;
+    public boolean modalidad;
 
     /*
      * Mínimo y máximo que el estudiante está dispuesto a pagar.
      */
-    private int min, max;
+    public int min, max;
 
     /*
      * Variable numérica que indica el tipo de perfil del usuario (utilizada para el factory pattern).
      * El 1 corresponde a Estudiante y el 2 a Tutor.
      */
-    private final int tipo_perfil = 1;
+    public final int tipo_perfil = 1;
 
     /**
 	 * Establece el nombre de usuario (único) del usuario.
