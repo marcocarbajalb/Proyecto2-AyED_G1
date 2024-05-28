@@ -1,5 +1,6 @@
 //Importar las librerías que harán falta para el programa
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -38,15 +39,13 @@ public class TutoriasUI {
 		//Crear los scanners que registrarán los datos ingresados por el ususario
 		Scanner scanInt = new Scanner(System.in);
 		Scanner scanString = new Scanner(System.in);
-        
-        
 		
 		boolean menu_principal = true;
 		while(menu_principal) {
 			
 			//Menú que se le mostrará al usuario
 			System.out.println("\n\n----------------BIENVENIDO/A AL SISTEMA DE RECOMENDACIÓN DE TUTORÍAS----------------");
-			System.out.println("\nIngrese el numero correspondiente a la opcion que desea realizar:\n1. Registrarse.\n2. Iniciar sesión.\n3. Salir del programa.");
+			System.out.println("\nIngrese el numero correspondiente a la opcion que desea realizar:\n1. Registrarse.\n2. Iniciar sesión.\n3. Administrar base de datos. \n4. Salir del programa.");
 			
 			int decision_principal = 0;
 			try {decision_principal = scanInt.nextInt();}
@@ -71,7 +70,29 @@ public class TutoriasUI {
 						System.out.println("\nOPCION NO DISPONIBLE.\nPor el momento, no hay ningun usuario registrado en el sistema de la universidad.");}
 					break;}
 				
-				case 3:{//Salir del programa
+                case 3:{//Administrar base de datos
+                    System.out.println("\n----------------ADMINISTRAR BASE DE DATOS (NEO4J)----------------");
+                    System.out.println("\nIngrese su usuario de administrador: ");
+                    String username_ingresado = scanString.nextLine().trim().toLowerCase();
+
+                    if((username_ingresado.equals("marcocar")||username_ingresado.equals("carlosald")||username_ingresado.equals("carlosang")||username_ingresado.equals("diegomon")||username_ingresado.equals("moisesalo")||username_ingresado.equals("joaquinpue"))){
+
+                        System.out.println("Ingrese su contraseña de administrador: ");
+                        String password_ingresado = scanString.nextLine().trim();
+
+                        if(password_ingresado.equals("admin1234")) {
+                            administrarBaseDeDatosNeo4j(username_neo4j,password_neo4j,boltURL,scanString,scanInt,lista_usernames,lista_usuarios);}
+
+                        else {
+                            System.out.println("\nCONTRASEÑA INCORRECTA.\nLa contraseña ingresada no es correcta.");
+                            break;}}
+
+                    else {
+                        System.out.println("\nADMINISTRADOR NO ENCONTRADO.\nNo hay ningun administrador con el usuario ingresado. Verifique que este sea correcto.");}
+
+                    break;}
+
+				case 4:{//Salir del programa
 					//Terminar el bucle del menú principal
 					menu_principal = false;
 					
@@ -407,13 +428,13 @@ public class TutoriasUI {
 
         lista_usuarios.add(usuario);
         lista_usernames.add(usuario.getUsername());
-
-        //Agregar usuario a la base de datos
-        agregarUsuarioNeo4j(tipo_perfil,usuario, username_neo4j, password_neo4j, boltURL);
         
         //Notificar al usuario y brindarle su información de registro.
         System.out.println("\nUSUARIO CREADO EXITOSAMENTE.");
-        System.out.println(nombre_completo + " (" + tipos_de_perfiles[tipo_perfil-1] + "), su nombre de usuario es: " + usuario.getUsername() + ", y su password es: " + password + ".");}
+        System.out.println(nombre_completo + " (" + tipos_de_perfiles[tipo_perfil-1] + "), su nombre de usuario es: " + usuario.getUsername() + ", y su password es: " + password + ".\n");
+    
+        //Agregar usuario a la base de datos
+        agregarUsuarioNeo4j(tipo_perfil, usuario, username_neo4j, password_neo4j, boltURL);}
 
     /**
 	 * Acceso a un usuario y todas las opciones dentro de este.
@@ -427,7 +448,7 @@ public class TutoriasUI {
      * @param boltURL La URL de la base de datos Neo4j.
 	 * @return Este método no devuelve nada.
 	 */
-	public static void iniciarSesion(ArrayList<ITipoUsuario> lista_usuarios, ArrayList<String> lista_usernames,Scanner scanString, Scanner scanInt, PersistenciaCSV gestor, String username_neo4j, String password_neo4j, String boltURL) {
+	public static void iniciarSesion(ArrayList<ITipoUsuario> lista_usuarios, ArrayList<String> lista_usernames, Scanner scanString, Scanner scanInt, PersistenciaCSV gestor, String username_neo4j, String password_neo4j, String boltURL) {
 	    	
         //En esta variable se registrará el nombre de usuario ingresado por el ususario
 	    String username_ingresado = "";
@@ -452,6 +473,61 @@ public class TutoriasUI {
 	    
 	    else {//Si el nombre de usuario ingresado no se encuentra entre los usernames del sistema
 			System.out.println("\nUSUARIO NO ENCONTRADO.\nNo hay ningun usuario con el correo electrónico institucional ingresado. Verifique que el correo sea correcto o que su usuario ya exista.");}}
+
+    public static void administrarBaseDeDatosNeo4j(String username_neo4j, String password_neo4j, String boltURL, Scanner scanString, Scanner scanInt, ArrayList<String> lista_usernames, ArrayList<ITipoUsuario> lista_usuarios) {
+        
+        boolean menu_adiminstracion = true;
+        while(menu_adiminstracion){
+            System.out.println("\nIngrese el numero correspondiente a la opcion que desea realizar:\n1. Eliminar usuario de la base de datos. \n2. Ver nodos y conexiones de la base de datos.\n3. Salir del menú de administración.");
+
+            int decision_administracion = 0;
+            try {decision_administracion = scanInt.nextInt();}
+            catch(Exception e) {
+                System.out.println("\n**ERROR** La decision ingresada debe ser un numero.");
+                scanInt.nextLine();
+                continue;}
+            
+            switch(decision_administracion) {
+
+                case 1:{//Eliminar usuario de la base de datos
+                    System.out.println("\n----------------[Eliminar usuario de la base de datos]----------------\n");
+                    System.out.println("Ingrese el correo institucional del usuario que desea eliminar de la base de datos:");
+                    String username = scanString.nextLine();
+
+                    if(lista_usernames.contains(username)) {
+                        int index = lista_usernames.indexOf(username);
+                        try ( EmbeddedNeo4j db = new EmbeddedNeo4j(boltURL, username_neo4j, password_neo4j) )
+                        {
+                            db.eliminarUsuario(username);
+                            System.out.println("\nOPERACIÓN EXITOSA.\nEl usuario con el correo institucional " + username + " ha sido eliminado de la base de datos correctamente.");
+                            lista_usernames.remove(index);
+                            lista_usuarios.remove(index);
+                            
+                        } catch (Exception e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();}}
+            
+                    else {
+                        System.out.println("\n**ERROR** El usuario con el correo ingresado no se encuentra en la base de datos.\n");}
+
+                    break;}
+
+                case 2:{//Ver nodos y conexiones de la base de datos
+                    System.out.println("\n----------------[Nodos y conexiones en Neo4j]----------------\n");
+                    try ( EmbeddedNeo4j db = new EmbeddedNeo4j(boltURL, username_neo4j, password_neo4j) )
+                    {
+                        db.printAllRelationshipsAndNodes();
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();}
+                    break;}
+
+                case 3:{//Salir del menú de administración
+                    menu_adiminstracion = false;
+                    break;}
+                
+                default:{//Opción no disponible (programación defensiva)
+                    System.out.println("\n**ERROR**\nEl numero ingresado no se encuentra entre las opciones disponibles.");}}}}
 
     public static void agregarUsuarioNeo4j(int tipo_perfil, ITipoUsuario usuario, String username_neo4j, String password_neo4j, String boltURL) {
         

@@ -261,4 +261,43 @@ public class EmbeddedNeo4j implements AutoCloseable {
 
         return ponderacion;
     }
+
+    public void printAllRelationshipsAndNodes() {
+        try (Session session = driver.session()) {
+            session.readTransaction(new TransactionWork<String>() {
+                @Override
+                public String execute(Transaction tx) {
+                    // Print all nodes
+                    Result nodesResult = tx.run("MATCH (n) RETURN n");
+                    while (nodesResult.hasNext()) {
+                        Record record = nodesResult.next();
+                        System.out.println(record.get("n").asMap());
+                    }
+
+                    // Print all relationships
+                    Result relationshipsResult = tx.run("MATCH (a)-[r]->(b) RETURN a, r, b");
+                    while (relationshipsResult.hasNext()) {
+                        Record record = relationshipsResult.next();
+                        System.out.println(record.get("a").asMap());
+                        System.out.println(record.get("r").asMap());
+                        System.out.println(record.get("b").asMap());
+                    }
+
+                    return "OK";
+                }
+            });
+        }
+    }
+
+    public void eliminarUsuario(String username) {
+        try ( Session session = driver.session() ) {
+            session.writeTransaction( new TransactionWork<String>() {
+                @Override
+                public String execute( Transaction tx ) {
+                    tx.run("MATCH (n {correo: '" + username + "'}) DETACH DELETE n");
+                    return "OK";
+                }
+            });
+        }
+    }
 }

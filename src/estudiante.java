@@ -83,9 +83,9 @@ public class Estudiante extends ITipoUsuario {
         String apellido = this.nombre_completo.split(" ")[1];
         String username = "";
         if (apellido.length() < 3){
-            username = apellido + carnet + "uvg.edu.gt";
+            username = apellido.toLowerCase() + carnet + "@uvg.edu.gt";
         } else {
-            username = apellido.substring(0, 3) + carnet + "uvg.edu.gt";
+            username = apellido.substring(0, 3).toLowerCase() + carnet + "@uvg.edu.gt";
         }
         this.username = username;}
 
