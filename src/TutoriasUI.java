@@ -39,6 +39,7 @@ public class TutoriasUI {
 		Scanner scanInt = new Scanner(System.in);
 		Scanner scanString = new Scanner(System.in);
         
+        
 		
 		boolean menu_principal = true;
 		while(menu_principal) {

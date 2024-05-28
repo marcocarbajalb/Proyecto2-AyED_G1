@@ -43,7 +43,7 @@ public class EmbeddedNeo4j implements AutoCloseable {
         driver.close();
     }
 
-    public void printGreeting( final String message )
+    public void printGreeting(final String message)
     {
         try ( Session session = driver.session() )
         {
@@ -64,6 +64,9 @@ public class EmbeddedNeo4j implements AutoCloseable {
     }
 
     public String insertarEstudiante(Estudiante estudiante) {
+
+        Map<ITipoUsuario, Record> previos = generarTablaHash();
+
     	try ( Session session = driver.session() )
         {
    		 
@@ -74,8 +77,18 @@ public class EmbeddedNeo4j implements AutoCloseable {
                 public String execute( Transaction tx )
                 {
                     tx.run( "CREATE (Test:Estudiante {correo:'" + estudiante.username + "', carné:"+ estudiante.carnet +", nombre_completo:'"+ estudiante.nombre_completo +"'})");                    
+
+                    for (Map.Entry<ITipoUsuario, Record> entry : previos.entrySet()) {
+                        if (entry.getKey() instanceof Tutor) {
+                            Tutor tutor = (Tutor) entry.getKey();
+                            Estudiante estudiante = (Estudiante) entry.getKey();
+                            int ponderacion = calcularPonderacion(tutor, estudiante);
+                            tx.run("MATCH (a:Estudiante {correo: '" + estudiante.username + "'}), (b:Tutor {correo: '" + tutor.username + "'}) CREATE (a)-[r:Relacion {ponderacion: " + ponderacion + "}]->(b)");
+                        }
+                    }
                     return "OK";
                 }
+
             }
    		 
    		 );
@@ -87,12 +100,23 @@ public class EmbeddedNeo4j implements AutoCloseable {
     }
 
     public String insertarTutor(Tutor tutor) {
+
+        Map<ITipoUsuario, Record> previos = generarTablaHash();
+
     try ( Session session = driver.session() ) {
         String result = session.writeTransaction( new TransactionWork<String>() {
             @Override
             public String execute( Transaction tx ) 
                 {
                     tx.run( "CREATE (Test:Tutor {correo:'" + tutor.username + "', carné:"+ tutor.carnet +", nombre_completo:'"+ tutor.nombre_completo +"'})");
+                    for (Map.Entry<ITipoUsuario, Record> entry : previos.entrySet()) {
+                        if (entry.getKey() instanceof Estudiante) {
+                            Tutor tutor = (Tutor) entry.getKey();
+                            Estudiante estudiante = (Estudiante) entry.getKey();
+                            int ponderacion = calcularPonderacion(tutor, estudiante);
+                            tx.run("MATCH (a:Estudiante {correo: '" + estudiante.username + "'}), (b:Tutor {correo: '" + tutor.username + "'}) CREATE (a)-[r:Relacion {ponderacion: " + ponderacion + "}]->(b)");
+                        }
+                    }
                     return "OK";
                 }
             }
@@ -104,29 +128,64 @@ public class EmbeddedNeo4j implements AutoCloseable {
         }
     }
 
-    public Map<String, String> generarTablaHash() {
-        Map<String, String> tablaHash = new HashMap<>();
+    public Map<ITipoUsuario, Record> generarTablaHash() {
+        Map<ITipoUsuario, Record> tablaHash = new HashMap<>();
     
         // Obtener todos los nodos
         List<Record> nodos = obtenerTodosLosNodos();
     
         // Leer el archivo CSV
-        List<List<String>> datosCsv = leerCsv("usuarios.csv");
-    
-        // Llenar la tabla hash
+        List<ITipoUsuario> datosCsv = new ArrayList<>(); 
+        List<List<String>> datos = leerCsv("data.csv");
+        for (List<String> fila : datos) {
+            if (fila.get(16) == "1") {
+                Estudiante usuario = new Estudiante();
+                usuario.setNombreCompleto(fila.get(0));
+                usuario.setCarnet(Integer.parseInt(fila.get(1)));
+                usuario.crearUsername();
+                usuario.setPassword(fila.get(3));
+                usuario.setEdad(Integer.parseInt(fila.get(4)));
+                usuario.setGender(Boolean.parseBoolean(fila.get(5)));
+                usuario.setDias_disponibles(fila.get(6));
+                usuario.setCalculo(Integer.parseInt(fila.get(7)));
+                usuario.setAlgebra(Integer.parseInt(fila.get(8)));
+                usuario.setFisica(Integer.parseInt(fila.get(9)));
+                usuario.setQuimica(Integer.parseInt(fila.get(10)));
+                usuario.setEstadistica(Integer.parseInt(fila.get(11)));
+                usuario.setProgramacion(Integer.parseInt(fila.get(12)));
+                usuario.setModalidad(Boolean.parseBoolean(fila.get(13)));
+                usuario.setMin(Integer.parseInt(fila.get(14)));
+                usuario.setMax(Integer.parseInt(fila.get(15)));
+                datosCsv.add(usuario);
+            } else if (fila.get(16) == "2") {
+                Tutor usuario = new Tutor();
+                usuario.setNombreCompleto(fila.get(0));
+                usuario.setCarnet(Integer.parseInt(fila.get(1)));
+                usuario.crearUsername();
+                usuario.setPassword(fila.get(3));
+                usuario.setEdad(Integer.parseInt(fila.get(4)));
+                usuario.setGender(Boolean.parseBoolean(fila.get(5)));
+                usuario.setDias_disponibles(fila.get(6));
+                usuario.setCalculo(Integer.parseInt(fila.get(7)));
+                usuario.setAlgebra(Integer.parseInt(fila.get(8)));
+                usuario.setFisica(Integer.parseInt(fila.get(9)));
+                usuario.setQuimica(Integer.parseInt(fila.get(10)));
+                usuario.setEstadistica(Integer.parseInt(fila.get(11)));
+                usuario.setProgramacion(Integer.parseInt(fila.get(12)));
+                usuario.setModalidad(Boolean.parseBoolean(fila.get(13)));
+                usuario.setMin(Integer.parseInt(fila.get(14)));
+                usuario.setMax(Integer.parseInt(fila.get(15)));
+                datosCsv.add(usuario);
+            }
+        }
+        // Crear la tabla hash
         for (Record nodo : nodos) {
-            String usernameNodo = nodo.get("username").asString();
-    
-            for (List<String> filaCsv : datosCsv) {
-                String usernameCsv = filaCsv.get(2);
-    
-                if (usernameNodo.equals(usernameCsv)) {
-                    tablaHash.put(usernameNodo, usernameCsv);
-                    break;
+            for (ITipoUsuario usuario : datosCsv) {
+                if (nodo.get("n").get("correo").asString().equals(usuario.getUsername())) {
+                    tablaHash.put(usuario, nodo);
                 }
             }
         }
-    
         return tablaHash;
     }
     
@@ -145,7 +204,7 @@ public class EmbeddedNeo4j implements AutoCloseable {
         }
     }
     
-    public List<List<String>> leerCsv(String rutaArchivo) {
+    public static List<List<String>> leerCsv(String rutaArchivo) {
         List<List<String>> datos = new ArrayList<>();
     
         try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
