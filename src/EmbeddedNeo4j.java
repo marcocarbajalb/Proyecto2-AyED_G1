@@ -1,4 +1,4 @@
-//Importar todas las librerías que harán falta para el programa
+ //Importar todas las librerías que harán falta para el programa
 import java.lang.AutoCloseable;
 import org.neo4j.driver.AuthTokens;
 import org.neo4j.driver.Driver;
@@ -65,8 +65,7 @@ public class EmbeddedNeo4j implements AutoCloseable {
                 @Override
                 public String execute( Transaction tx )
                 {
-                    tx.run( "CREATE (Test:Estudiante {correo:'" + username + "', carné:"+ carnet +", nombre_completo:'"+ nombre_completo +"'})");
-                    
+                    tx.run( "CREATE (Test:Estudiante {correo:'" + username + "', carné:"+ carnet +", nombre_completo:'"+ nombre_completo +"'})");                    
                     return "OK";
                 }
             }
@@ -80,26 +79,20 @@ public class EmbeddedNeo4j implements AutoCloseable {
     }
 
     public String insertarTutor(String username, int carnet, String nombre_completo) {
-    	try ( Session session = driver.session() )
-        {
-   		 
-   		 String result = session.writeTransaction( new TransactionWork<String>()
-   		 
-            {
-                @Override
-                public String execute( Transaction tx )
+    try ( Session session = driver.session() ) {
+        String result = session.writeTransaction( new TransactionWork<String>() {
+            @Override
+            public String execute( Transaction tx ) 
                 {
                     tx.run( "CREATE (Test:Tutor {correo:'" + username + "', carné:"+ carnet +", nombre_completo:'"+ nombre_completo +"'})");
-                    
                     return "OK";
                 }
             }
-   		 
-   		 );
-            
-            return result;
+        
+        );
+        return result;
         } catch (Exception e) {
-        	return e.getMessage();
+        return e.getMessage();
         }
     }
 }

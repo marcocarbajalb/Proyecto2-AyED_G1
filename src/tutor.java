@@ -71,7 +71,7 @@ public class Tutor extends ITipoUsuario {
      * Variable numérica que indica el tipo de perfil del usuario (utilizada para el factory pattern).
      * El 1 corresponde a Estudiante y el 2 a Tutor.
      */
-    private final int tipo_perfil = 1;
+    private final int tipo_perfil = 2;
 
     /**
 	 * Establece el nombre de usuario (único) del usuario.
