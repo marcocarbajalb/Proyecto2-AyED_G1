@@ -408,7 +408,7 @@ public class TutoriasUI {
         lista_usernames.add(usuario.getUsername());
 
         //Agregar usuario a la base de datos
-        agregarUsuarioNeo4j(tipo_perfil,usuario.getUsername(), carnet, nombre_completo, username_neo4j, password_neo4j, boltURL);
+        agregarUsuarioNeo4j(tipo_perfil,usuario, username_neo4j, password_neo4j, boltURL);
         
         //Notificar al usuario y brindarle su información de registro.
         System.out.println("\nUSUARIO CREADO EXITOSAMENTE.");
@@ -452,13 +452,14 @@ public class TutoriasUI {
 	    else {//Si el nombre de usuario ingresado no se encuentra entre los usernames del sistema
 			System.out.println("\nUSUARIO NO ENCONTRADO.\nNo hay ningun usuario con el correo electrónico institucional ingresado. Verifique que el correo sea correcto o que su usuario ya exista.");}}
 
-    public static void agregarUsuarioNeo4j(int tipo_perfil, String username, int carnet, String nombre_completo, String username_neo4j, String password_neo4j, String boltURL) {
+    public static void agregarUsuarioNeo4j(int tipo_perfil, ITipoUsuario usuario, String username_neo4j, String password_neo4j, String boltURL) {
         
         if(tipo_perfil==1) //Estudiante
         {
             try ( EmbeddedNeo4j db = new EmbeddedNeo4j(boltURL, username_neo4j, password_neo4j) )
-        {
-		 	String result = db.insertarEstudiante(username, carnet, nombre_completo);
+        {   
+		 	Estudiante estudiante = (Estudiante) usuario;
+            String result = db.insertarEstudiante(estudiante);
 		 	
 		 	if (result.equalsIgnoreCase("OK")) {
 		 		System.out.println("Estudiante insertado correctamente");
@@ -473,7 +474,8 @@ public class TutoriasUI {
         {
             try ( EmbeddedNeo4j db = new EmbeddedNeo4j(boltURL, username_neo4j, password_neo4j) )
         {
-		 	String result = db.insertarTutor(username, carnet, nombre_completo);
+		 	Tutor tutor = (Tutor) usuario;
+            String result = db.insertarTutor(tutor);
 		 	
 		 	if (result.equalsIgnoreCase("OK")) {
 		 		System.out.println("Tutor insertado correctamente");
