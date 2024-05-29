@@ -282,7 +282,7 @@ public class Estudiante extends ITipoUsuario {
 						break;}
 					
 					case 3:{//Obtener recomendación
-						System.out.println("\n----------------OBTENER RECOMENDACION----------------");
+						System.out.println("\n------------------------OBTENER RECOMENDACION------------------------\n");
 						
                             try (EmbeddedNeo4j neo4j = new EmbeddedNeo4j(boltURL, username_neo4j, password_neo4j)) {
                                 String correoEstudiante = this.username;

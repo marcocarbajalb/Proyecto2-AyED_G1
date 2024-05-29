@@ -504,7 +504,7 @@ public class TutoriasUI {
                         try ( EmbeddedNeo4j db = new EmbeddedNeo4j(boltURL, username_neo4j, password_neo4j) )
                         {
                             db.eliminarUsuario(username);
-                            System.out.println("\nOPERACIÓN EXITOSA.\nEl usuario con el correo institucional " + username + " ha sido eliminado de la base de datos correctamente.");
+                            System.out.println("\nOPERACION EXITOSA.\nEl usuario con el correo institucional " + username + " ha sido eliminado de la base de datos correctamente.");
                             lista_usernames.remove(index);
                             lista_usuarios.remove(index);
                             
