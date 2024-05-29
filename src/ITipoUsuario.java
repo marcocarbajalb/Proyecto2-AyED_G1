@@ -103,6 +103,6 @@ public abstract class ITipoUsuario {
 	 * @param scanInt El scanner para registrar los números enteros ingresados por el usuario.
 	 * @return Este método no devuelve nada.
 	 */	
-	public abstract void menuIndividual(ITipoUsuario usuario_activo, ArrayList<ITipoUsuario> lista_usuarios, ArrayList<String> lista_usernames, Scanner scanString, Scanner scanInt);
+	public abstract void menuIndividual(ITipoUsuario usuario_activo, ArrayList<ITipoUsuario> lista_usuarios, ArrayList<String> lista_usernames, Scanner scanString, Scanner scanInt, String boltURL, String username_neo4j, String password_neo4j);
 
 }

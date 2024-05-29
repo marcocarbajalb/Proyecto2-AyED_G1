@@ -5,7 +5,11 @@
 
 //Importar las librerías que harán falta para el programa
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
 * Esta clase representará a un estudiante, y heredará de la superclase ITipoUsuario.
@@ -232,7 +236,7 @@ public class Estudiante extends ITipoUsuario {
 	 * @return Este método no devuelve nada.
 	 */			
     @Override
-    public void menuIndividual(ITipoUsuario usuario_activo, ArrayList<ITipoUsuario> lista_usuarios, ArrayList<String> lista_usernames, Scanner scanString, Scanner scanInt) {
+    public void menuIndividual(ITipoUsuario usuario_activo, ArrayList<ITipoUsuario> lista_usuarios, ArrayList<String> lista_usernames, Scanner scanString, Scanner scanInt, String boltURL, String username_neo4j, String password_neo4j) {
         boolean menu_secundario = true;
 		    while(menu_secundario) {
 		        System.out.println("\n-------------------------------------------------------------------------");
@@ -278,9 +282,43 @@ public class Estudiante extends ITipoUsuario {
 						break;}
 					
 					case 3:{//Obtener recomendación
-						System.out.println("\n----------------OBTENER RECOMENDACIÓN----------------");
+						System.out.println("\n----------------OBTENER RECOMENDACION----------------");
 						
-                        //Usar Neo4j para obtener la recomendación (grafos)
+                            try (EmbeddedNeo4j neo4j = new EmbeddedNeo4j(boltURL, username_neo4j, password_neo4j)) {
+                                String correoEstudiante = this.username;
+                                
+                                Map<String, List<?>> resultado = neo4j.obtenerTutoresConectados(correoEstudiante);
+                                
+                                List<String> correosTutores = (List<String>) resultado.get("correosTutores");
+                                List<Integer> ponderaciones = (List<Integer>) resultado.get("ponderaciones");
+
+                                // Crear un mapa de correos de tutores a ponderaciones
+                                Map<String, Integer> tutorPonderacionMap = new HashMap<>();
+                                for (int i = 0; i < correosTutores.size(); i++) {
+                                    tutorPonderacionMap.put(correosTutores.get(i), ponderaciones.get(i));}
+
+                                // Ordenar el mapa por las ponderaciones (valores)
+                                List<Map.Entry<String, Integer>> sortedEntries = tutorPonderacionMap.entrySet()
+                                        .stream()
+                                        .sorted(Map.Entry.comparingByValue())
+                                        .collect(Collectors.toList());
+
+                                // Seleccionar los tutores con las rutas más cortas (tres como máximo)
+                                List<String> topTutores = new ArrayList<>();
+
+                                for (int i = 0; i < 3 && i < sortedEntries.size(); i++) {
+                                    topTutores.add(sortedEntries.get(i).getKey());}
+
+                                // Imprimir los resultados
+                                System.out.println("En base a tu información, los tutores recomendados, en orden de prioridad, son:");
+                                int k = 1;
+                                for (String tutor : topTutores) {
+                                    System.out.println(k + ". " + tutor);
+                                    k++;}
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
 
 						break;}
 					

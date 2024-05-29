@@ -1,6 +1,5 @@
 //Importar las librerías que harán falta para el programa
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -44,7 +43,7 @@ public class TutoriasUI {
 		while(menu_principal) {
 			
 			//Menú que se le mostrará al usuario
-			System.out.println("\n\n----------------BIENVENIDO/A AL SISTEMA DE RECOMENDACIÓN DE TUTORÍAS----------------");
+			System.out.println("\n\n----------------BIENVENIDO/A AL SISTEMA DE RECOMENDACION DE TUTORIAS----------------");
 			System.out.println("\nIngrese el numero correspondiente a la opcion que desea realizar:\n1. Registrarse.\n2. Iniciar sesión.\n3. Administrar base de datos. \n4. Salir del programa.");
 			
 			int decision_principal = 0;
@@ -58,7 +57,7 @@ public class TutoriasUI {
 			switch(decision_principal) {
 				case 1:{//Registrarse
 					System.out.println("\n----------------------------REGISTRARSE----------------------------");
-					registrarUsuario(lista_usuarios,lista_usernames,scanString,scanInt,username_neo4j,password_neo4j,boltURL);
+					registrarUsuario(lista_usuarios,lista_usernames,scanString,scanInt,username_neo4j,password_neo4j,boltURL,gestor);
 					break;}
 				
 				case 2:{//Iniciar sesión
@@ -71,7 +70,7 @@ public class TutoriasUI {
 					break;}
 				
                 case 3:{//Administrar base de datos
-                    System.out.println("\n----------------ADMINISTRAR BASE DE DATOS (NEO4J)----------------");
+                    System.out.println("\n--------------------ADMINISTRAR BASE DE DATOS (NEO4J)--------------------");
                     System.out.println("\nIngrese su usuario de administrador: ");
                     String username_ingresado = scanString.nextLine().trim().toLowerCase();
 
@@ -124,9 +123,10 @@ public class TutoriasUI {
      * @param username_neo4j El nombre de usuario de la base de datos Neo4j.
      * @param password_neo4j La contraseña de la base de datos Neo4j.
      * @param boltURL La URL de la base de datos Neo4j.
+     * @param gestor El gestor (instancia de la clase PersistenciaCSV) para guardar y leer los datos del csv.
 	 * @return Este método no devuelve nada.
 	 */
-	public static void registrarUsuario(ArrayList<ITipoUsuario> lista_usuarios, ArrayList<String> lista_usernames, Scanner scanString, Scanner scanInt, String username_neo4j, String password_neo4j, String boltURL) {
+	public static void registrarUsuario(ArrayList<ITipoUsuario> lista_usuarios, ArrayList<String> lista_usernames, Scanner scanString, Scanner scanInt, String username_neo4j, String password_neo4j, String boltURL, PersistenciaCSV gestor) {
 		
 		//Tipos de usuarios disponibles
 		String [] tipos_de_perfiles = {"Estudiante","Tutor"};
@@ -433,6 +433,11 @@ public class TutoriasUI {
         System.out.println("\nUSUARIO CREADO EXITOSAMENTE.");
         System.out.println(nombre_completo + " (" + tipos_de_perfiles[tipo_perfil-1] + "), su nombre de usuario es: " + usuario.getUsername() + ", y su password es: " + password + ".\n");
     
+        // Guardar la información de los usuarios existentes en el archivo CSV
+        try {gestor.guardarUsuariosCSV(lista_usuarios);} 
+        catch (IOException e) {
+            System.out.println("\n**ERROR**\nSe produjo un error al guardar la información de los usuarios del sistema.");}
+
         //Agregar usuario a la base de datos
         agregarUsuarioNeo4j(tipo_perfil, usuario, username_neo4j, password_neo4j, boltURL);}
 
@@ -466,7 +471,7 @@ public class TutoriasUI {
 
 			if(usuario_activo.getPassword().equals(password)) {//Si la contraseña ingresada es correcta 
 		    
-			usuario_activo.menuIndividual(usuario_activo,lista_usuarios,lista_usernames,scanString,scanInt);}
+			usuario_activo.menuIndividual(usuario_activo,lista_usuarios,lista_usernames,scanString,scanInt,boltURL,username_neo4j,password_neo4j);}
 			    
 	    else {//Si la contraseña ingresada es incorrecta
 			System.out.println("\nCONTRASEÑA INCORRECTA.\nLa contraseña ingresada no es correcta.");}}
@@ -513,7 +518,7 @@ public class TutoriasUI {
                     break;}
 
                 case 2:{//Ver nodos y conexiones de la base de datos
-                    System.out.println("\n----------------[Nodos y conexiones en Neo4j]----------------\n");
+                    System.out.println("\n--------------------[Nodos y conexiones en Neo4j]--------------------\n");
                     try ( EmbeddedNeo4j db = new EmbeddedNeo4j(boltURL, username_neo4j, password_neo4j) )
                     {
                         db.printAllRelationshipsAndNodes();

@@ -1,4 +1,4 @@
- //Importar todas las librerías que harán falta para el programa
+// Importar todas las librerías que harán falta para el programa
 import java.lang.AutoCloseable;
 import org.neo4j.driver.AuthTokens;
 import org.neo4j.driver.Driver;
@@ -22,109 +22,93 @@ import java.util.List;
 import java.util.Map;
 import org.neo4j.driver.Value;
 
-
 /**
  * Clase que se encargará de manejar la base de datos de Neo4j.
- * @author Marco Carbajal, Carlos Aldana, Carlos Angel y Diego Monroy
+ * @author Marco Carbajal
  * @version 20.0.1, 08/05/2024
  */
 public class EmbeddedNeo4j implements AutoCloseable {
 
     private final Driver driver;
     
-    public EmbeddedNeo4j( String uri, String user, String password )
-    {
-        driver = GraphDatabase.driver( uri, AuthTokens.basic( user, password ) );
+    public EmbeddedNeo4j(String uri, String user, String password) {
+        driver = GraphDatabase.driver(uri, AuthTokens.basic(user, password));
     }
 
     @Override
-    public void close() throws Exception
-    {
+    public void close() throws Exception {
         driver.close();
     }
 
-    public void printGreeting(final String message)
-    {
-        try ( Session session = driver.session() )
-        {
-            String greeting = session.writeTransaction( new TransactionWork<String>()
-            {
+    public void printGreeting(final String message) {
+        try (Session session = driver.session()) {
+            String greeting = session.writeTransaction(new TransactionWork<String>() {
                 @Override
-                public String execute( Transaction tx )
-                {
-                    Result result = tx.run( "CREATE (a:Greeting) " +
+                public String execute(Transaction tx) {
+                    Result result = tx.run("CREATE (a:Greeting) " +
                                                      "SET a.message = $message " +
                                                      "RETURN a.message + ', from node ' + id(a)",
-                            parameters( "message", message ) );
-                    return result.single().get( 0 ).asString();
+                            parameters("message", message));
+                    return result.single().get(0).asString();
                 }
-            } );
-            System.out.println( greeting );
+            });
+            System.out.println(greeting);
         }
     }
 
     public String insertarEstudiante(Estudiante estudiante) {
-
         Map<ITipoUsuario, Record> previos = generarTablaHash();
 
-    	try ( Session session = driver.session() )
-        {
-   		 
-   		 String result = session.writeTransaction( new TransactionWork<String>()
-   		 
-            {
+        try (Session session = driver.session()) {
+            String result = session.writeTransaction(new TransactionWork<String>() {
                 @Override
-                public String execute( Transaction tx )
-                {
-                    tx.run( "CREATE (Test:Estudiante {correo:'" + estudiante.username + "', carné:"+ estudiante.carnet +", nombre_completo:'"+ estudiante.nombre_completo +"'})");                    
+                public String execute(Transaction tx) {
+                    tx.run("CREATE (e:Estudiante {correo: $correo, carnet: $carnet, nombre_completo: $nombre_completo})",
+                            parameters("correo", estudiante.getUsername(), "carnet", estudiante.carnet, "nombre_completo", estudiante.getNombreCompleto()));
 
                     for (Map.Entry<ITipoUsuario, Record> entry : previos.entrySet()) {
                         if (entry.getKey() instanceof Tutor) {
                             Tutor tutor = (Tutor) entry.getKey();
-                            Estudiante estudiante = (Estudiante) entry.getKey();
                             int ponderacion = calcularPonderacion(tutor, estudiante);
-                            tx.run("MATCH (a:Estudiante {correo: '" + estudiante.username + "'}), (b:Tutor {correo: '" + tutor.username + "'}) CREATE (a)-[r:Relacion {ponderacion: " + ponderacion + "}]->(b)");
+                            tx.run("MATCH (a:Estudiante {correo: $correoEstudiante}), (b:Tutor {correo: $correoTutor}) " +
+                                    "CREATE (a)-[r:Relacion {ponderacion: $ponderacion}]->(b)",
+                                    parameters("correoEstudiante", estudiante.getUsername(), "correoTutor", tutor.getUsername(), "ponderacion", ponderacion));
                         }
                     }
                     return "OK";
                 }
-
-            }
-   		 
-   		 );
-            
+            });
             return result;
         } catch (Exception e) {
-        	return e.getMessage();
+            return e.getMessage();
         }
     }
 
     public String insertarTutor(Tutor tutor) {
-
         Map<ITipoUsuario, Record> previos = generarTablaHash();
 
-    try ( Session session = driver.session() ) {
-        String result = session.writeTransaction( new TransactionWork<String>() {
-            @Override
-            public String execute( Transaction tx ) 
-                {
-                    tx.run( "CREATE (Test:Tutor {correo:'" + tutor.username + "', carné:"+ tutor.carnet +", nombre_completo:'"+ tutor.nombre_completo +"'})");
+        try (Session session = driver.session()) {
+            String result = session.writeTransaction(new TransactionWork<String>() {
+                @Override
+                public String execute(Transaction tx) {
+                    tx.run("CREATE (t:Tutor {correo: $correo, carnet: $carnet, nombre_completo: $nombre_completo})",
+                            parameters("correo", tutor.getUsername(), "carnet", tutor.carnet, "nombre_completo", tutor.getNombreCompleto()));
+
                     for (Map.Entry<ITipoUsuario, Record> entry : previos.entrySet()) {
                         if (entry.getKey() instanceof Estudiante) {
-                            Tutor tutor = (Tutor) entry.getKey();
                             Estudiante estudiante = (Estudiante) entry.getKey();
                             int ponderacion = calcularPonderacion(tutor, estudiante);
-                            tx.run("MATCH (a:Estudiante {correo: '" + estudiante.username + "'}), (b:Tutor {correo: '" + tutor.username + "'}) CREATE (a)-[r:Relacion {ponderacion: " + ponderacion + "}]->(b)");
+                            tx.run("MATCH (a:Estudiante {correo: $correoEstudiante}), (b:Tutor {correo: $correoTutor}) " +
+                                    "CREATE (a)-[r:Relacion {ponderacion: $ponderacion}]->(b)",
+                                    parameters("correoEstudiante", estudiante.getUsername(), "correoTutor", tutor.getUsername(), "ponderacion", ponderacion));
                         }
                     }
                     return "OK";
                 }
-            }
-        
-        );
-        return result;
+            });
+            return result;
         } catch (Exception e) {
-        return e.getMessage();
+            return e.getMessage();
         }
     }
 
@@ -136,9 +120,9 @@ public class EmbeddedNeo4j implements AutoCloseable {
     
         // Leer el archivo CSV
         List<ITipoUsuario> datosCsv = new ArrayList<>(); 
-        List<List<String>> datos = leerCsv("data.csv");
+        List<List<String>> datos = leerCsv("usuarios.csv");
         for (List<String> fila : datos) {
-            if (fila.get(16) == "1") {
+            if (fila.get(16).equals("1")) {
                 Estudiante usuario = new Estudiante();
                 usuario.setNombreCompleto(fila.get(0));
                 usuario.setCarnet(Integer.parseInt(fila.get(1)));
@@ -157,7 +141,7 @@ public class EmbeddedNeo4j implements AutoCloseable {
                 usuario.setMin(Integer.parseInt(fila.get(14)));
                 usuario.setMax(Integer.parseInt(fila.get(15)));
                 datosCsv.add(usuario);
-            } else if (fila.get(16) == "2") {
+            } else if (fila.get(16).equals("2")) {
                 Tutor usuario = new Tutor();
                 usuario.setNombreCompleto(fila.get(0));
                 usuario.setCarnet(Integer.parseInt(fila.get(1)));
@@ -190,11 +174,11 @@ public class EmbeddedNeo4j implements AutoCloseable {
     }
     
     public List<Record> obtenerTodosLosNodos() {
-        try ( Session session = driver.session() ) {
-            List<Record> result = session.readTransaction( new TransactionWork<List<Record>>() {
+        try (Session session = driver.session()) {
+            List<Record> result = session.readTransaction(new TransactionWork<List<Record>>() {
                 @Override
-                public List<Record> execute( Transaction tx ) {
-                    Result result = tx.run( "MATCH (n) RETURN n");
+                public List<Record> execute(Transaction tx) {
+                    Result result = tx.run("MATCH (n) RETURN n");
                     return result.list();
                 }
             });
@@ -290,14 +274,72 @@ public class EmbeddedNeo4j implements AutoCloseable {
     }
 
     public void eliminarUsuario(String username) {
-        try ( Session session = driver.session() ) {
-            session.writeTransaction( new TransactionWork<String>() {
+        try (Session session = driver.session()) {
+            session.writeTransaction(new TransactionWork<String>() {
                 @Override
-                public String execute( Transaction tx ) {
-                    tx.run("MATCH (n {correo: '" + username + "'}) DETACH DELETE n");
+                public String execute(Transaction tx) {
+                    tx.run("MATCH (n {correo: $correo}) DETACH DELETE n", parameters("correo", username));
                     return "OK";
                 }
             });
         }
+    }
+
+    public Map<String, List<?>> obtenerTutoresConectados(String correoEstudiante) {
+        Map<String, List<?>> resultado = new HashMap<>();
+        List<String> correosTutores = new ArrayList<>();
+        List<Integer> ponderaciones = new ArrayList<>();
+
+        try (Session session = driver.session()) {
+            session.readTransaction(new TransactionWork<String>() {
+                @Override
+                public String execute(Transaction tx) {
+                    Result result = tx.run("MATCH (e:Estudiante {correo: $correoEstudiante})-[r:Relacion]->(t:Tutor) " +
+                                            "RETURN t.correo AS correoTutor, r.ponderacion AS ponderacion",
+                                            parameters("correoEstudiante", correoEstudiante));
+
+                    while (result.hasNext()) {
+                        Record record = result.next();
+                        correosTutores.add(record.get("correoTutor").asString());
+                        ponderaciones.add(record.get("ponderacion").asInt());
+                    }
+                    return "OK";
+                }
+            });
+        }
+
+        resultado.put("correosTutores", correosTutores);
+        resultado.put("ponderaciones", ponderaciones);
+
+        return resultado;
+    }
+
+    public Map<String, List<?>> obtenerEstudiantesConectados(String correoTutor) {
+        Map<String, List<?>> resultado = new HashMap<>();
+        List<String> correosEstudiantes = new ArrayList<>();
+        List<Integer> ponderaciones = new ArrayList<>();
+
+        try (Session session = driver.session()) {
+            session.readTransaction(new TransactionWork<String>() {
+                @Override
+                public String execute(Transaction tx) {
+                    Result result = tx.run("MATCH (t:Tutor {correo: $correoTutor})<-[r:Relacion]-(e:Estudiante) " +
+                                            "RETURN e.correo AS correoEstudiante, r.ponderacion AS ponderacion",
+                                            parameters("correoTutor", correoTutor));
+                    
+                    while (result.hasNext()) {
+                        Record record = result.next();
+                        correosEstudiantes.add(record.get("correoEstudiante").asString());
+                        ponderaciones.add(record.get("ponderacion").asInt());
+                    }
+                    return "OK";
+                }
+            });
+        }
+
+        resultado.put("correosEstudiantes", correosEstudiantes);
+        resultado.put("ponderaciones", ponderaciones);
+
+        return resultado;
     }
 }

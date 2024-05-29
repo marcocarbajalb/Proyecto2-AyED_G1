@@ -1,0 +1,11 @@
+nombre_completo,carnet,username,password,edad,gender,dias_disponibles,calculo,algebra,fisica,quimica,estadistica,programacion,modalidad,min,max,tipo_perfil
+Marco Carbajal,23025,car23025@uvg.edu.gt,car23025,19,true,1111110,9,8,7,1,9,7,true,75,125,1
+Joshua Lopez,21442,lop21442@uvg.edu.gt,lop21442,20,true,1110110,9,1,8,9,7,1,true,85,95,2
+Diana Gonzalez,23141,gon23141@uvg.edu.gt,gon23141,19,false,1111111,5,1,6,1,7,1,false,50,80,1
+Julian Fernandez,23768,fer23768@uvg.edu.gt,fer23768,21,true,1101100,5,1,7,1,6,3,true,100,150,1
+Jimena Santos,23006,san23006@uvg.edu.gt,san23006,19,false,1111110,9,1,8,10,7,1,false,80,120,2
+Sofia Arevalo,22926,are22926@uvg.edu.gt,are22926,19,false,1010110,7,1,7,3,8,2,true,70,90,1
+Carlos Angel,23010,ang23010@uvg.edu.gt,ang23010,19,true,1100101,8,7,7,1,8,6,true,80,100,1
+Diego Monroy,23394,mon23394@uvg.edu.gt,mon23394,20,true,1011010,8,5,7,1,8,6,false,100,200,1
+Pablo Valle,23464,val23464@uvg.edu.gt,val23464,21,true,0011010,9,8,8,1,5,3,true,105,125,2
+Carlos Aldana,23318,ald23318@uvg.edu.gt,ald23318,19,true,1111110,9,8,7,1,8,8,true,60,150,2
